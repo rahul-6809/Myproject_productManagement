@@ -1,9 +1,10 @@
 const mongoose = require('mongoose')
 
 const isValidValue=(value)=>{
-    if(typeof(value) === undefined|| typeof(value) ===null){return false}
-    if(typeof(value) ==='string'&& (value).trim.length>0){return true}
-}
+    if (typeof value === 'undefined' || value === null) return false;
+    if (typeof value === 'string' && value.trim().length === 0) return false;
+    return true;
+ }
 
 
 const isValidNumber = function (value) {
@@ -19,7 +20,7 @@ const isValidObjectId = function (ObjectId) {
 }
 
 let validateEmail = function (email) {
-    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);    //Checking if user entered a valid email or not
+    return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/).test(email);    //Checking if user entered a valid email or not
 };
 
 let validatephone = function (phone) {

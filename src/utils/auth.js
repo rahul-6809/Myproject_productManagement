@@ -1,12 +1,13 @@
 const jwt = require('jsonwebtoken')
 const { SECRET_KEY } = require('../../configs')
-
+const { isValidObjectId } = require('../utils/validator')
+const UserModel=require('../Models/UserModels')
 
 const authentication = (req,res,next) => {
 try{ 
-    const token =req.headers['x-api-key']
+    const token =req.headers['x-api-key'||'Bearer Token']
     if(!token){
-        return req.status(403).send({status:false, message:"Token must v present"})
+        return res.status(403).send({status:false, message:"Token must v present"})
      }
      const decodeToken=jwt.verify(token,SECRET_KEY)
      if (!decodeToken) {
@@ -28,8 +29,13 @@ try{
     }
 }
 
-const authorization =async (req,res) => {
+const authorization =async (req,res,next) => {
     try{
+        let token = req.headers['authorization']
+        if (!token) token = req.headers['x-api-key']
+        if (!token) {
+            return res.status(400).send({ status: false, message: "Please enter bearer token" })
+        }
         let userId = req.params.userId;
 
         if (!isValidObjectId(userId)) {
@@ -39,7 +45,7 @@ const authorization =async (req,res) => {
 
         let decoded = decodeToken.userId
 
-        let User = await userModel.findById(userId)
+        let User = await UserModel.findById(userId)
        
         if (!User) {
             return res.status(404).send({ status: false, message: "User does not exist" })
